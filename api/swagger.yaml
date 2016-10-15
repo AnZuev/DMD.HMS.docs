@@ -384,11 +384,19 @@ paths:
       description: "get available rooms for specific period of time"
       operationId: "roomsGetAvailableRoomsGET"
       parameters:
-      - in: "body"
-        name: "search"
+      - in: "query"
+        name: "from"
         required: true
-        schema:
-          $ref: "#/definitions/RoomSearchModel"
+        type: string
+      - in: "query"
+        name: "to"
+        required: true
+        type: string
+      - in: query
+        name: "roomType"
+        required: false
+        type: integer
+        description: "use to filter is exists, otherwise ignore"
       responses:
         200:
           description: "Everything ok, user has recieved all available rooms"
@@ -510,19 +518,6 @@ definitions:
         type: "integer"
       status:
         type: "string"
-  RoomSearchModel:
-    type: "object"
-    properties:
-      from:
-        type: "string"
-        description: "Date when user is going to arrive"
-      to:
-        type: "string"
-        description: "Date when user is going to leave"
-      roomType:
-        type: "integer"
-        description: "Id of room type. If specified - use it to filter, otherwise\
-          \ ignore it"
   RoomBookModel:
     type: "object"
     properties:
