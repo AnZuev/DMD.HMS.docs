@@ -1,0 +1,588 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "dmdProjectAPI"
+host: "blablabla.ru"
+tags:
+- name: "auth"
+  description: "requests for authorization"
+- name: "usual users"
+  description: "requests for usual users"
+- name: "admin"
+  description: "requires for admin functionality"
+schemes:
+- "http"
+paths:
+  /admin/login:
+    post:
+      tags:
+      - "admin"
+      description: "Login for admin access"
+      operationId: "adminLoginPOST"
+      parameters:
+      - in: "body"
+        name: "authData"
+        description: "data for authorization"
+        required: false
+        schema:
+          $ref: "#/definitions/UserAuthData"
+      responses:
+        200:
+          description: "Admin login and password are correct"
+          schema:
+            $ref: "#/definitions/Admin"
+        401:
+          description: "Admin login or password are incorrect"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Admin"
+  /admin/orders/cancel:
+    post:
+      tags:
+      - "usual users"
+      description: "cancel order by admin"
+      operationId: "adminOrdersCancelPOST"
+      parameters:
+      - in: "body"
+        name: "CancelOrderItem"
+        description: "Cancel order by admin"
+        required: false
+        schema:
+          $ref: "#/definitions/CancelOrderItem"
+      responses:
+        200:
+          description: "Order is canceled. State - canceled"
+          schema:
+            $ref: "#/definitions/Order"
+        400:
+          description: "It isn't available to cancel not for your orders or order\
+            \ is already in state paid"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized, you can't cancel order if you are not authorized"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "No order found"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /admin/rooms/addRoom:
+    put:
+      tags:
+      - "admin"
+      description: "Add 'amount' rooms"
+      operationId: "adminRoomsAddRoomPUT"
+      parameters:
+      - in: "body"
+        name: "room"
+        description: "data for room"
+        required: false
+        schema:
+          $ref: "#/definitions/room"
+      responses:
+        200:
+          description: "All rooms was successfully added"
+        401:
+          description: "You are not authorized to do that"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Admin"
+  /admin/rooms/addRoomType:
+    post:
+      tags:
+      - "admin"
+      description: "modify room type"
+      operationId: "adminRoomsAddRoomTypePOST"
+      parameters:
+      - in: "body"
+        name: "roomType"
+        description: "data for roomType"
+        required: false
+        schema:
+          $ref: "#/definitions/RoomType"
+      responses:
+        200:
+          description: "Room type successfully modified"
+          schema:
+            $ref: "#/definitions/RoomType"
+        400:
+          description: "There is already room type with such title or another semantic\
+            \ error"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "You are not authorized to do that"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "No room type was found by id"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Admin"
+    put:
+      tags:
+      - "admin"
+      description: "add new room type"
+      operationId: "adminRoomsAddRoomTypePUT"
+      parameters:
+      - in: "body"
+        name: "roomType"
+        description: "data for roomType"
+        required: false
+        schema:
+          $ref: "#/definitions/roomType"
+      responses:
+        200:
+          description: "new room type added"
+          schema:
+            $ref: "#/definitions/RoomType"
+        400:
+          description: "There is already room type with such title"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "You are not authorized to do that"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Admin"
+  /admin/rooms/changeRoomStatus:
+    post:
+      tags:
+      - "admin"
+      description: "Change status of room"
+      operationId: "adminRoomsChangeRoomStatusPOST"
+      parameters:
+      - in: "body"
+        name: "room"
+        description: "object with properties id and new status"
+        required: false
+        schema:
+          $ref: "#/definitions/room_1"
+      responses:
+        200:
+          description: "Room status has been changed"
+          schema:
+            $ref: "#/definitions/RoomWithStatusModel"
+        400:
+          description: "wrong room number or wrong status"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "You are not authorized to do that"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Admin"
+  /auth/login:
+    post:
+      tags:
+      - "auth"
+      description: "Login"
+      operationId: "authLoginPOST"
+      parameters:
+      - in: "body"
+        name: "authData"
+        description: "data for authorization"
+        required: false
+        schema:
+          $ref: "#/definitions/UserAuthData"
+      responses:
+        200:
+          description: "Login and password are correct"
+          schema:
+            $ref: "#/definitions/User"
+        401:
+          description: "Login or password are incorrect"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Auth"
+    put:
+      tags:
+      - "auth"
+      description: "sign up"
+      operationId: "authLoginPUT"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "The user JSON to sign up"
+        required: true
+        schema:
+          $ref: "#/definitions/UserDataSignUpModel"
+      responses:
+        200:
+          description: "User has been created"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Пользователь с такой почтой уже есть, нужно выбрать другую"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Auth"
+  /orders:
+    get:
+      tags:
+      - "usual users"
+      description: "Get all orders with 'to' field greater than now"
+      operationId: "ordersGET"
+      parameters: []
+      responses:
+        200:
+          description: "Array of orders"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+        204:
+          description: "No order's found"
+        401:
+          description: "Your are not allowed to see your orders while you are not\
+            \ authorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Серверная ошибка(если в описании указано, что это необрабо\
+            танная ошибка - срочно сообщаем разработчику)"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /orders/cancel:
+    post:
+      tags:
+      - "usual users"
+      description: "cancel order"
+      operationId: "ordersCancelPOST"
+      parameters:
+      - in: "body"
+        name: "CancelOrderItem"
+        description: "Data for canceling"
+        required: false
+        schema:
+          $ref: "#/definitions/CancelOrderItem"
+      responses:
+        200:
+          description: "Order is canceled. State - canceled"
+          schema:
+            $ref: "#/definitions/Order"
+        400:
+          description: "It isn't available to cancel not for your orders or order\
+            \ is already in state paid"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized, you can't cancel order if you are not authorized"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "No order found"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /orders/pay:
+    post:
+      tags:
+      - "usual users"
+      description: "pay for order"
+      operationId: "ordersPayPOST"
+      parameters:
+      - in: "body"
+        name: "OrderInvoiceItem"
+        description: "Invoice for order"
+        required: false
+        schema:
+          $ref: "#/definitions/OrderInvoiceItem"
+      responses:
+        200:
+          description: "Order is paid. State - paid"
+          schema:
+            $ref: "#/definitions/Order"
+        400:
+          description: "It isn't available to pay not for your orders"
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: "Unauthorized, you can't pay for room if you are not authorized"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "No order found"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /rooms/book:
+    put:
+      tags:
+      - "usual users"
+      description: "book room"
+      operationId: "roomsBookPUT"
+      parameters:
+      - in: "body"
+        name: "bookItem"
+        description: "data for booking"
+        required: false
+        schema:
+          $ref: "#/definitions/RoomBookModel"
+      responses:
+        200:
+          description: "Room has been successfully booked. State - booked"
+          schema:
+            $ref: "#/definitions/Order"
+        401:
+          description: "Unauthorized, you can't book room if you are not authorized"
+          schema:
+            $ref: "#/definitions/Error"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /rooms/getAvailableRooms:
+    get:
+      tags:
+      - "usual users"
+      description: "get available rooms for specific period of time"
+      operationId: "roomsGetAvailableRoomsGET"
+      parameters:
+      - in: "query"
+        name: "from"
+        required: true
+        type: string
+      - in: "query"
+        name: "to"
+        required: true
+        type: string
+      - in: query
+        name: "roomType"
+        required: false
+        type: integer
+        description: "use to filter is exists, otherwise ignore"
+      responses:
+        200:
+          description: "Everything ok, user has recieved all available rooms"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Room"
+        204:
+          description: "No rooms available for this date"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+  /rooms/getTypes:
+    get:
+      tags:
+      - "usual users"
+      description: "get all room types"
+      operationId: "roomsGetTypesGET"
+      parameters: []
+      responses:
+        200:
+          description: "Everything ok, user has recieved all room types"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RoomType"
+        204:
+          description: "No room types available"
+        500:
+          description: "Somesthing bad happend on backend;"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "UsualUsers"
+definitions:
+  Error:
+    type: "object"
+    properties:
+      exception:
+        type: "boolean"
+      message:
+        type: "string"
+      code:
+        type: "number"
+  User:
+    type: "object"
+    properties:
+      firstName:
+        type: "string"
+      secondName:
+        type: "string"
+      fatherName:
+        type: "string"
+      id:
+        type: "integer"
+  UserDataSignUpModel:
+    type: "object"
+    properties:
+      firstName:
+        type: "string"
+      secondName:
+        type: "string"
+      fatherName:
+        type: "string"
+      mail:
+        type: "string"
+      password:
+        type: "string"
+      phoneNumber:
+        type: "string"
+  UserAuthData:
+    type: "object"
+    properties:
+      mail:
+        type: "string"
+      password:
+        type: "string"
+  Admin:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Admin id in db"
+      role:
+        type: "string"
+        description: "Admin's role"
+  RoomType:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "id of room type"
+      cost:
+        type: "integer"
+        description: "price per night"
+      description:
+        type: "string"
+        description: "Description of room"
+      photo:
+        type: "string"
+        description: "url for getting photo"
+      type:
+        type: "string"
+        description: "type of room"
+  Room:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+      roomNumber:
+        type: "integer"
+  RoomWithStatusModel:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+      roomNumber:
+        type: "integer"
+      status:
+        type: "string"
+  RoomBookModel:
+    type: "object"
+    properties:
+      from:
+        type: "string"
+        description: "Date when user is going to arrive"
+      to:
+        type: "string"
+        description: "Date when user is going to leave"
+      roomNumber:
+        type: "integer"
+        description: "roomNumber of room to book"
+  Order:
+    type: "object"
+    properties:
+      roomNumber:
+        type: "integer"
+        description: "roomNumber"
+      from:
+        type: "string"
+      to:
+        type: "string"
+      cost:
+        type: "integer"
+        description: "price for room during this period"
+      state:
+        type: "string"
+        description: "booked, paid, canceled"
+  OrderInvoiceItem:
+    type: "object"
+    properties:
+      order:
+        type: "integer"
+        description: "id of order"
+      sum:
+        type: "integer"
+        description: "amount of payment"
+  CancelOrderItem:
+    type: "object"
+    properties:
+      order:
+        type: "integer"
+        description: "id of order"
+  room:
+    type: "object"
+    properties:
+      amount:
+        type: "integer"
+      type:
+        type: "string"
+  roomType:
+    type: "object"
+    properties:
+      cost:
+        type: "integer"
+      description:
+        type: "string"
+      photo:
+        type: "string"
+      type:
+        type: "string"
+  room_1:
+    type: "object"
+    properties:
+      status:
+        type: "integer"
+      roomNumber:
+        type: "integer"
